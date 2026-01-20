@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los 12 Horóscopos - Signos Zodiacales</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fondo con overlay y tipografía base */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.75) 0%, rgba(118, 75, 162, 0.75) 100%), url('https://www.gaia.com/wp-content/uploads/signos-astrologicos.jpg') center/cover fixed;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Contenedor centrado y ancho máximo */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Título principal */
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Subtítulo descriptivo */
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            margin-bottom: 50px;
+        }
+
+        /* Grid responsivo para las tarjetas */
+        .horoscopes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Tarjeta genérica */
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        /* Animación al pasar el cursor */
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Encabezado de cada tarjeta */
+        .card-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        /* Imagen representativa del signo */
+        .card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        /* Cuerpo de contenido de la tarjeta */
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Nombre y símbolo del signo */
+        .signo-nombre {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Fila con fechas del signo */
+        .fechas {
+            font-size: 1em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Icono de calendario */
+        .fechas-icon {
+            font-size: 1.3em;
+        }
+
+        /* Encabezado de características */
+        .caracteristicas-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Lista flexible de características */
+        .caracteristicas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .caracteristica-tag {
+            background-color: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border-left: 4px solid;
+        }
+
+        /* Sección del elemento (Fuego, Tierra, etc.) */
+        .elemento {
+            font-size: 0.95em;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        /* Etiqueta destacada para el elemento */
+        .elemento-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Colores específicos para cada signo */
+        .aries .card-header { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E72 100%); }
+        .aries .caracteristica-tag { border-color: #FF6B6B; }
+
+        .tauro .card-header { background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%); }
+        .tauro .caracteristica-tag { border-color: #4ca44f; }
+
+        .geminis .card-header { background: linear-gradient(135deg, #FFD54F 0%, #FFC107 100%); }
+        .geminis .caracteristica-tag { border-color: #FFC107; }
+
+        .cancer .card-header { background: linear-gradient(135deg, #B0BEC5 0%, #90A4AE 100%); }
+        .cancer .caracteristica-tag { border-color: #B0BEC5; }
+
+        .leo .card-header { background: linear-gradient(135deg, #FFB300 0%, #FFA500 100%); }
+        .leo .caracteristica-tag { border-color: #FFB300; }
+
+        .virgo .card-header { background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%); }
+        .virgo .caracteristica-tag { border-color: #388E3C; }
+
+        .libra .card-header { background: linear-gradient(135deg, #64B5F6 0%, #42A5F5 100%); }
+        .libra .caracteristica-tag { border-color: #42A5F5; }
+
+        .escorpio .card-header { background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%); }
+        .escorpio .caracteristica-tag { border-color: #8B0000; }
+
+        .sagitario .card-header { background: linear-gradient(135deg, #9C27B0 0%, #AB47BC 100%); }
+        .sagitario .caracteristica-tag { border-color: #9C27B0; }
+
+        .capricornio .card-header { background: linear-gradient(135deg, #1A1A1A 0%, #404040 100%); }
+        .capricornio .caracteristica-tag { border-color: #404040; }
+
+        .acuario .card-header { background: linear-gradient(135deg, #0288D1 0%, #0097A7 100%); }
+        .acuario .caracteristica-tag { border-color: #0288D1; }
+
+        .piscis .card-header { background: linear-gradient(135deg, #26A69A 0%, #009688 100%); }
+        .piscis .caracteristica-tag { border-color: #009688; }
+
+        /* Pie de página */
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.95em;
+        }
+
+        /* Ajustes móviles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .horoscopes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Cabecera: título y subtítulo -->
+        <h1>♈ Los 12 Horóscopos ♓</h1>
+        <p class="subtitle">Descubre las características de cada signo zodiacal</p>
+
+        <!-- Grid que agrupa las 12 tarjetas -->
+        <div class="horoscopes-grid">
+            <!-- ARIES -->
+            <div class="card aries">
+                <div class="card-header">
+                    <div class="signo-nombre">♈ ARIES</div>
+                </div>
+                <img src="https://cloudfront-eu-central-1.images.arcpublishing.com/prisaradiolos40/PNSEKRANPRNYZN6FF4ZTM5XITE.jpg" alt="Aries" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>21 de Marzo - 19 de Abril</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Apasionado</span>
+                        <span class="caracteristica-tag">Valiente</span>
+                        <span class="caracteristica-tag">Directo</span>
+                        <span class="caracteristica-tag">Energético</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Fuego 🔥
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAURO -->
+            <div class="card tauro">
+                <div class="card-header">
+                    <div class="signo-nombre">♉ TAURO</div>
+                </div>
+                <img src="https://resizer.glanacion.com/resizer/v2/por-que-el-toro-representa-al-signo-de-7OJMOB7Y4BA7FHHL5VOH54K74E.png?auth=7760c7f8a0507415fbabaac8bf651eefc048a9ebf55049a07a5e3ae920d033da&width=1280&height=854&quality=70&smart=true" alt="Tauro" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>20 de Abril - 20 de Mayo</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Estable</span>
+                        <span class="caracteristica-tag">Confiable</span>
+                        <span class="caracteristica-tag">Práctico</span>
+                        <span class="caracteristica-tag">Leal</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Tierra 🌍
+                    </div>
+                </div>
+            </div>
+
+            <!-- GÉMINIS -->
+            <div class="card geminis">
+                <div class="card-header">
+                    <div class="signo-nombre">♊ GÉMINIS</div>
+                </div>
+                <img src="https://resizer.glanacion.com/resizer/v2/en-el-zodiaco-geminis-es-representado-por-los-TSITJA67QVGV7HJSF7MIHXNSEQ.jpg?auth=f36c68c83c086f82b3849cf6ba0065a1a81647c9e8894a4d6fc025253e4816ee&width=1200&quality=70&smart=false&height=848" alt="Géminis" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>21 de Mayo - 20 de Junio</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Comunicativo</span>
+                        <span class="caracteristica-tag">Versátil</span>
+                        <span class="caracteristica-tag">Inteligente</span>
+                        <span class="caracteristica-tag">Curioso</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Aire 💨
+                    </div>
+                </div>
+            </div>
+
+            <!-- CÁNCER -->
+            <div class="card cancer">
+                <div class="card-header">
+                    <div class="signo-nombre">♋ CÁNCER</div>
+                </div>
+                <img src="https://los40.com/resizer/v2/6ZKPGLX2PFJHVLI53PIJHGJ6YM.jpg?auth=85ea44ff07e422f0972153720ec682050c4a900922ad25db085cf6e9a6fb7fcc&quality=70&width=1200&height=900&smart=true" alt="Cáncer" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>21 de Junio - 22 de Julio</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Empático</span>
+                        <span class="caracteristica-tag">Protector</span>
+                        <span class="caracteristica-tag">Intuitivo</span>
+                        <span class="caracteristica-tag">Emotivo</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Agua 💧
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEO -->
+            <div class="card leo">
+                <div class="card-header">
+                    <div class="signo-nombre">♌ LEO</div>
+                </div>
+                <img src="https://cloudfront-eu-central-1.images.arcpublishing.com/prisaradiolos40/OJNS3PFUPBIILGVBET4JOR3NQE.jpg" alt="Leo" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>23 de Julio - 22 de Agosto</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Confiado</span>
+                        <span class="caracteristica-tag">Carismático</span>
+                        <span class="caracteristica-tag">Generoso</span>
+                        <span class="caracteristica-tag">Creativo</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Fuego 🔥
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIRGO -->
+            <div class="card virgo">
+                <div class="card-header">
+                    <div class="signo-nombre">♍ VIRGO</div>
+                </div>
+                <img src="https://acelobert.com/dw1wtp/wp-content/uploads/2021/09/Virgo_astrologia_Acelobert-1.jpg" alt="Virgo" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>23 de Agosto - 22 de Septiembre</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Analítico</span>
+                        <span class="caracteristica-tag">Detallista</span>
+                        <span class="caracteristica-tag">Eficiente</span>
+                        <span class="caracteristica-tag">Perfeccionista</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Tierra 🌍
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIBRA -->
+            <div class="card libra">
+                <div class="card-header">
+                    <div class="signo-nombre">♎ LIBRA</div>
+                </div>
+                <img src="https://los40.com/resizer/v2/UKCCXE4EWVMADPCNSDZOOL35BU.jpg?auth=50236e68e6f5c788ce5289c73f7971b09557044fd39dad67e93ed6ea1cad7504&quality=70&width=1200&height=675&smart=true" alt="Libra" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>23 de Septiembre - 22 de Octubre</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Equilibrado</span>
+                        <span class="caracteristica-tag">Justo</span>
+                        <span class="caracteristica-tag">Sociable</span>
+                        <span class="caracteristica-tag">Artístico</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Aire 💨
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESCORPIO -->
+            <div class="card escorpio">
+                <div class="card-header">
+                    <div class="signo-nombre">♏ ESCORPIO</div>
+                </div>
+                <img src="https://los40.com/resizer/v2/XMSGLLZCQNO5JAHIINRAOWOZK4.jpg?auth=20fcb0c302ace8e73961858b854159837ad54846233738d1f5fa61efc2e347f4&quality=70&width=1200&height=900&smart=true" alt="Escorpio" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>23 de Octubre - 21 de Noviembre</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Intenso</span>
+                        <span class="caracteristica-tag">Misterioso</span>
+                        <span class="caracteristica-tag">Apasionado</span>
+                        <span class="caracteristica-tag">Poderoso</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Agua 💧
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAGITARIO -->
+            <div class="card sagitario">
+                <div class="card-header">
+                    <div class="signo-nombre">♐ SAGITARIO</div>
+                </div>
+                <img src="https://los40.com/resizer/v2/W7PAMEGGWVLLLM3TD3VFTZCO2E.jpg?auth=d6f6e77481f21cf024255efad5291329430730dffc138896bf89657a3cff802e&quality=70&width=1200&height=900&smart=true" alt="Sagitario" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>22 de Noviembre - 21 de Diciembre</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Aventurero</span>
+                        <span class="caracteristica-tag">Optimista</span>
+                        <span class="caracteristica-tag">Honesto</span>
+                        <span class="caracteristica-tag">Filósofo</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Fuego 🔥
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAPRICORNIO -->
+            <div class="card capricornio">
+                <div class="card-header">
+                    <div class="signo-nombre">♑ CAPRICORNIO</div>
+                </div>
+                <img src="https://cloudfront-eu-central-1.images.arcpublishing.com/prisaradiolos40/ZPQ4JRHWF5MORIHPPMRR4QCCQU.jpg" alt="Capricornio" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>22 de Diciembre - 19 de Enero</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Disciplinado</span>
+                        <span class="caracteristica-tag">Responsable</span>
+                        <span class="caracteristica-tag">Ambicioso</span>
+                        <span class="caracteristica-tag">Realista</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Tierra 🌍
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACUARIO -->
+            <div class="card acuario">
+                <div class="card-header">
+                    <div class="signo-nombre">♒ ACUARIO</div>
+                </div>
+                <img src="https://static.vecteezy.com/system/resources/previews/002/094/796/non_2x/aquarius-zodiac-sign-icons-vector.jpg" alt="Acuario" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>20 de Enero - 18 de Febrero</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Innovador</span>
+                        <span class="caracteristica-tag">Independiente</span>
+                        <span class="caracteristica-tag">Humanitario</span>
+                        <span class="caracteristica-tag">Intelectual</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Aire 💨
+                    </div>
+                </div>
+            </div>
+
+            <!-- PISCIS -->
+            <div class="card piscis">
+                <div class="card-header">
+                    <div class="signo-nombre">♓ PISCIS</div>
+                </div>
+                <img src="https://cloudfront-eu-central-1.images.arcpublishing.com/prisaradiolos40/D7JJKS3MYJI5HJDNEUGD3OAMIY.jpg" alt="Piscis" class="card-image">
+                <div class="card-body">
+                    <!-- Fechas del signo -->
+                    <div class="fechas">
+                        <span class="fechas-icon">📅</span>
+                        <span>19 de Febrero - 20 de Marzo</span>
+                    </div>
+                    <!-- Lista de características -->
+                    <div class="caracteristicas-title">Características:</div>
+                    <div class="caracteristicas">
+                        <span class="caracteristica-tag">Imaginativo</span>
+                        <span class="caracteristica-tag">Compasivo</span>
+                        <span class="caracteristica-tag">Artístico</span>
+                        <span class="caracteristica-tag">Soñador</span>
+                    </div>
+                    <!-- Elemento al que pertenece el signo -->
+                    <div class="elemento">
+                        <span class="elemento-label">Elemento:</span> Agua 💧
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🌟 Descubre tu signo zodiacal y aprende más sobre ti mismo 🌟</p>
+            <p>© 2026 - Página de Horóscopos</p>
+        </footer>
+    </div>
+</body>
+</html>
